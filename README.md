@@ -10,6 +10,8 @@ Projeto de design e desenvolvimento front-end, feito do zero com HTML, CSS e Jav
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 
+### [🔗 Ver o site no ar: techrb.netlify.app](https://techrb.netlify.app/)
+
 <br>
 
 ![Topo do site da RB Tech](docs/hero.jpg)
@@ -91,6 +93,8 @@ Depois acesse `http://localhost:5178`.
 .
 ├── index.html   # o site completo (HTML, CSS, JS e imagens embutidas)
 ├── robots.txt   # regras de indexação para buscadores
+├── sitemap.xml  # mapa do site para o Google
+├── og-image.jpg # imagem de prévia ao compartilhar o link
 └── docs/        # imagens usadas neste README
 ```
 
