@@ -1,4 +1,11 @@
+# Arquivos de trabalho (ficam só no computador)
 rb-tech.html
+rb-tech.src.html
 work-block.html
+build.ps1
+mockup-sistema-ilustrativo.html
 site-rbtech/
-shots/*.png
+shots/
+logo-*.png
+logo-original.jpg
+.claude/
