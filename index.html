@@ -129,6 +129,20 @@ p{margin:0}
 .strip-track span::after{content:"";width:9px;height:9px;background:var(--grad);transform:rotate(45deg)}
 @keyframes slide{to{transform:translateX(-50%)}}
 
+/* Destaque: página de lojas de roupa */
+.seg-banner{display:flex;align-items:center;gap:1.2rem;margin-top:2.5rem;padding:1.2rem 1.4rem;border-radius:var(--radius);text-decoration:none;border:1px solid color-mix(in srgb, var(--cyan) 50%, var(--line));background:radial-gradient(80% 140% at 100% 0%, color-mix(in srgb, var(--blue) 35%, transparent), transparent 60%), var(--surface);transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s}
+.seg-banner:hover{transform:translateY(-3px);border-color:var(--cyan)}
+.seg-ico{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--grad);color:#fff;box-shadow:0 0 24px color-mix(in srgb, var(--blue) 60%, transparent)}
+.seg-ico svg{width:26px;height:26px}
+.seg-txt{display:grid;gap:.15rem;min-width:0;flex:1}
+.seg-txt b{font-family:var(--display);font-style:italic;font-weight:800;font-size:1.35rem;text-transform:uppercase}
+.seg-txt small{color:var(--muted);font-size:.98rem}
+.seg-btn{flex:none}
+@media (max-width:640px){.seg-banner{flex-wrap:wrap;margin-top:1.5rem}.seg-btn{width:100%}}
+.svc-link{display:inline-flex;align-items:center;gap:.35rem;margin-top:.2rem;font-weight:600;font-size:.92rem;color:var(--cyan);text-decoration:none}
+.svc-link svg{width:16px;height:16px;transition:transform .25s}
+.svc-link:hover svg{transform:translateX(3px)}
+
 /* SECTIONS */
 section{position:relative}
 .sec{padding-block:6rem}
@@ -354,6 +368,7 @@ footer .links a:hover{color:var(--ink)}
       <a href="#sobre">Quem somos</a>
       <a href="#servicos">Serviços</a>
       <a href="#projetos">Projetos</a>
+      <a href="/lojas-de-roupa/">Lojas de roupa</a>
       <a href="#instagram">Instagram</a>
       <a href="#contato">Contato</a>
     </nav>
@@ -407,6 +422,14 @@ footer .links a:hover{color:var(--ink)}
     </div>
   </div>
 
+  <div class="wrap">
+    <a class="seg-banner reveal" href="/lojas-de-roupa/">
+      <span class="seg-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 6l2 4 2-1v12h8V9l2 1 2-4-4-3c0 1.7-1.8 3-4 3S8 4.7 8 3z"/></svg></span>
+      <span class="seg-txt"><b>Tem loja de roupa?</b><small>Veja sua loja vendendo pelo site, com o pedido chegando pronto no WhatsApp.</small></span>
+      <span class="btn btn-primary seg-btn">Venha conferir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+  </div>
+
   <section class="about sec" id="sobre">
     <div class="wrap">
       <div class="about-text reveal">
@@ -453,6 +476,7 @@ footer .links a:hover{color:var(--ink)}
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 8h-12zM6 6 5 3H2"/><circle cx="9" cy="19.5" r="1.2"/><circle cx="18" cy="19.5" r="1.2"/></svg></div>
           <h3>Lojas virtuais</h3>
           <p>E-commerce completo com pagamento, frete e gestão de pedidos.</p>
+          <a class="svc-link" href="/lojas-de-roupa/">É loja de roupa? Venha conferir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </article>
         <article class="svc reveal">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></div>
