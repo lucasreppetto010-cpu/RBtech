@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loja Modelo | Demonstração RB Tech</title>
+  <meta name="description" content="Loja de demonstração da RB Tech: vitrine, tamanhos, carrinho e pedido finalizado no WhatsApp." />
+  <meta property="og:title" content="Loja Modelo · Demonstração RB Tech" />
+  <meta property="og:description" content="Escolha suas peças, monte o carrinho e finalize no WhatsApp." />
+  <meta property="og:image" content="assets/produtos/d3.jpg" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%23141414%22/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="preview-bar">
+    Loja de <strong>demonstração</strong> feita pela RB Tech · produtos e preços ilustrativos
+  </div>
+
+  <div class="top-strip">
+    <span>Enviamos para todo o Brasil</span>
+    <span class="sep">•</span>
+    <span>Retirada na loja ou entrega</span>
+    <span class="sep">•</span>
+    <span>Finalize pelo WhatsApp</span>
+  </div>
+
+  <header class="header">
+    <div class="container header__row">
+      <a href="#" class="logo logo--text" aria-label="Loja Modelo">loja<span>.</span>modelo</a>
+
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="searchInput" type="search" placeholder="Buscar vestido, conjunto, blazer..." />
+      </label>
+
+      <button class="cart-btn" id="openCartBtn" aria-label="Abrir carrinho">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="cart-btn__count" id="cartCount">0</span>
+      </button>
+    </div>
+
+    <nav class="container cats" id="cats" aria-label="Categorias"></nav>
+  </header>
+
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <p class="hero__kicker">Nova coleção</p>
+        <h1>Monte seu look e finalize no WhatsApp<span class="dot">.</span></h1>
+        <p class="hero__sub">Escolha suas peças, o tamanho e a cor. O pedido chega pronto no nosso WhatsApp e a gente confirma com você.</p>
+        <div class="hero__cta">
+          <a class="btn btn--dark" href="#vitrine">Ver a vitrine</a>
+          <a class="btn btn--ghost" href="#como-funciona">Como funciona</a>
+        </div>
+      </div>
+      <div class="hero__images" aria-hidden="true">
+        <img src="assets/produtos/d4.jpg" alt="" class="hero__img hero__img--a" />
+        <img src="assets/produtos/d3.jpg" alt="" class="hero__img hero__img--b" />
+      </div>
+    </div>
+  </section>
+
+  <section class="steps" id="como-funciona">
+    <div class="container steps__grid">
+      <div class="step"><span class="step__n">1</span><div><strong>Escolha as peças</strong><p>Filtre por categoria e veja os tamanhos disponíveis.</p></div></div>
+      <div class="step"><span class="step__n">2</span><div><strong>Monte o carrinho</strong><p>Ele fica salvo, mesmo se você fechar o site.</p></div></div>
+      <div class="step"><span class="step__n">3</span><div><strong>Finalize no WhatsApp</strong><p>O pedido chega pronto para a vendedora confirmar.</p></div></div>
+    </div>
+  </section>
+
+  <main class="container store" id="vitrine">
+    <div class="store__head">
+      <div>
+        <h2 id="storeTitle">Todas as peças</h2>
+        <p class="muted" id="storeCount"></p>
+      </div>
+      <select id="sortSelect" class="select" aria-label="Ordenar">
+        <option value="featured">Destaques</option>
+        <option value="priceAsc">Menor preço</option>
+        <option value="priceDesc">Maior preço</option>
+        <option value="nameAsc">A–Z</option>
+      </select>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="emptyMsg" hidden>Nenhuma peça encontrada.</p>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <p class="logo logo--text">loja<span>.</span>modelo</p>
+        <p class="muted">Loja de demonstração. Teste à vontade: o pedido de teste chega no WhatsApp da RB Tech.</p>
+      </div>
+      <div>
+        <h3>Quer uma loja assim?</h3>
+        <ul class="stores">
+          <li>Com as suas peças e a sua marca</li>
+          <li>Pedido chega pronto no seu WhatsApp</li>
+          <li>Você mesma cadastra e edita as peças</li>
+        </ul>
+      </div>
+      <div>
+        <h3>RB Tech</h3>
+        <a class="footer__link" id="footerWpp" target="_blank" rel="noopener">Falar com a RB Tech no WhatsApp</a>
+        <a class="footer__link" href="https://techrb.netlify.app/" target="_blank" rel="noopener">Site da RB Tech</a>
+        <a class="footer__link" href="https://www.instagram.com/tech.rb7/" target="_blank" rel="noopener">Instagram @tech.rb7</a>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <small class="muted">© <span id="year"></span> RB Tech · Loja de demonstração · Fotos: Unsplash</small>
+    </div>
+  </footer>
+
+  <!-- Detalhe do produto -->
+  <div class="modal" id="productModal" aria-hidden="true">
+    <div class="modal__overlay" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="pmName">
+      <button class="icon-btn modal__close" data-close aria-label="Fechar">✕</button>
+      <div class="pm">
+        <img id="pmImg" class="pm__img" alt="" />
+        <div class="pm__info">
+          <p class="pm__cat" id="pmCat"></p>
+          <h3 id="pmName"></h3>
+          <p class="pm__price" id="pmPrice"></p>
+          <p class="pm__desc" id="pmDesc"></p>
+          <p class="label">Tamanho</p>
+          <div class="sizes" id="pmSizes"></div>
+          <p class="pm__hint" id="pmHint"></p>
+          <button class="btn btn--dark btn--full" id="pmAdd">Adicionar ao carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carrinho -->
+  <aside class="drawer" id="cartDrawer" aria-hidden="true">
+    <div class="drawer__overlay" data-close-cart></div>
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Carrinho">
+      <div class="drawer__head">
+        <h3>Seu carrinho</h3>
+        <button class="icon-btn" data-close-cart aria-label="Fechar">✕</button>
+      </div>
+      <div class="drawer__body" id="cartItems"></div>
+      <div class="drawer__foot">
+        <div class="totals"><span>Subtotal</span><strong id="cartSubtotal">R$ 0,00</strong></div>
+        <p class="muted small">Frete e pagamento combinados pelo WhatsApp.</p>
+        <label class="label" for="cartName">Seu nome</label>
+        <input id="cartName" class="input" placeholder="Como podemos te chamar?" />
+        <label class="label" for="cartNote">Observações</label>
+        <textarea id="cartNote" class="input" rows="2" placeholder="Retirar na loja, entregar, cor preferida..."></textarea>
+        <button class="btn btn--wpp btn--full" id="checkoutBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z"/></svg>
+          Finalizar no WhatsApp
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
