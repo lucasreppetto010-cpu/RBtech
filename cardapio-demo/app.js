@@ -61,7 +61,9 @@
   const io = new IntersectionObserver((ents) => ents.forEach((en) => {
     if (!en.isIntersecting) return;
     document.querySelectorAll(".cat").forEach((b) => b.classList.toggle("is-on", b.dataset.go === en.target.id));
-    const on = $(".cat.is-on"); if (on) on.scrollIntoView({ inline: "center", block: "nearest" });
+    const on = $(".cat.is-on"), bar = $("#cats");
+    // centraliza o botão só dentro da barra de categorias (scrollIntoView mexia na rolagem da página)
+    if (on) bar.scrollTo({ left: on.offsetLeft - (bar.clientWidth - on.clientWidth) / 2, behavior: "smooth" });
   }), { rootMargin: "-45% 0px -50% 0px" });
   document.querySelectorAll(".sec").forEach((s) => io.observe(s));
 
