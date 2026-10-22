@@ -1,6 +1,6 @@
 // Cardápio digital: lê window.LOJA / TAMANHOS / BORDAS / CARDAPIO (data.js) e monta tudo.
 (function () {
-  const L = window.LOJA, TAM = window.TAMANHOS, BORDAS = window.BORDAS, MENU = window.CARDAPIO;
+  const L = window.LOJA, TAM = window.TAMANHOS, BORDAS = window.BORDAS, MENU = window.CARDAPIO, ADIC = window.ADICIONAIS || [];
   const $ = (s, el = document) => el.querySelector(s);
   const brl = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -73,10 +73,11 @@
 
   function abrirItem(id) {
     cur = ITENS.find((i) => i.id === id); if (!cur) return;
-    sel = { tam: pizza(cur) ? "G" : null, meia: "", borda: 0, qtd: 1 };
+    sel = { tam: pizza(cur) ? "G" : null, meia: "", borda: 0, adic: [], qtd: 1 };
     $("#itImg").src = cur.img; $("#itImg").style.objectPosition = cur.pos || "50% 50%";
     $("#itNome").textContent = cur.nome; $("#itDesc").textContent = cur.desc; $("#itObs").value = "";
-    $("#blkTam").hidden = !pizza(cur); $("#blkBorda").hidden = !pizza(cur); $("#blkMeia").hidden = !cur.meia;
+    $("#blkTam").hidden = !pizza(cur); $("#blkBorda").hidden = !pizza(cur); $("#blkMeia").hidden = !cur.meia; $("#blkAdic").hidden = !cur.adic;
+    if (cur.adic) $("#optAdic").innerHTML = ADIC.map((a, i) => `<button class="opt-btn" data-adic="${i}"><span>${esc(a.nome)}</span><span>+ ${brl(a.preco)}</span></button>`).join("");
     if (pizza(cur)) {
       $("#optTam").innerHTML = TAM.map((t) => `<button class="opt-btn${t.id === sel.tam ? " is-on" : ""}" data-tam="${t.id}">${t.nome}<small>${t.info}</small><b>${brl(cur.preco[t.id])}</b></button>`).join("");
       $("#optBorda").innerHTML = BORDAS.map((b, i) => `<button class="opt-btn${i === 0 ? " is-on" : ""}" data-borda="${i}"><span>${esc(b.nome)}</span><span>${b.preco ? "+ " + brl(b.preco) : ""}</span></button>`).join("");
@@ -89,7 +90,7 @@
     abrir("#itemSheet");
   }
   function precoItem() {
-    if (!pizza(cur)) return cur.preco.unico;
+    if (!pizza(cur)) return cur.preco.unico + sel.adic.reduce((s, i) => s + ADIC[i].preco, 0);
     let p = cur.preco[sel.tam];
     if (sel.meia) p = Math.max(p, ITENS.find((i) => i.id === sel.meia).preco[sel.tam]);
     return p + BORDAS[sel.borda].preco;
@@ -100,6 +101,12 @@
   }
   $("#optTam").addEventListener("click", (e) => { const b = e.target.closest("[data-tam]"); if (!b) return; sel.tam = b.dataset.tam; document.querySelectorAll("#optTam .opt-btn").forEach((x) => x.classList.toggle("is-on", x === b)); atualizaItem(); });
   $("#optBorda").addEventListener("click", (e) => { const b = e.target.closest("[data-borda]"); if (!b) return; sel.borda = Number(b.dataset.borda); document.querySelectorAll("#optBorda .opt-btn").forEach((x) => x.classList.toggle("is-on", x === b)); atualizaItem(); });
+  $("#optAdic").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-adic]"); if (!b) return;
+    const i = Number(b.dataset.adic), k = sel.adic.indexOf(i);
+    if (k < 0) sel.adic.push(i); else sel.adic.splice(k, 1);
+    b.classList.toggle("is-on", k < 0); atualizaItem();
+  });
   $("#selMeia").addEventListener("change", (e) => { sel.meia = e.target.value; atualizaItem(); });
   $("#qMenos").addEventListener("click", () => { if (sel.qtd > 1) { sel.qtd--; atualizaItem(); } });
   $("#qMais").addEventListener("click", () => { sel.qtd++; atualizaItem(); });
@@ -109,6 +116,7 @@
     if (tam) det.push(`${tam.nome} (${tam.info})`);
     if (sel.meia) det.push(`½ ${cur.nome} + ½ ${ITENS.find((i) => i.id === sel.meia).nome}`);
     if (pizza(cur) && sel.borda) det.push(BORDAS[sel.borda].nome);
+    if (sel.adic.length) det.push("Adicionais: " + sel.adic.map((i) => ADIC[i].nome).join(", "));
     const obs = $("#itObs").value.trim(); if (obs) det.push("Obs.: " + obs);
     cart.push({ nome: cur.nome, det, unit: precoItem(), qtd: sel.qtd });
     save(); renderCart(); fechar("#itemSheet");

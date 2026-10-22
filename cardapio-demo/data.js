@@ -1,7 +1,7 @@
 // Pizzaria fictícia de demonstração (RB Tech): tudo que muda de uma loja para outra fica aqui.
 window.LOJA = {
-  nome: "Forno & Lenha Pizzaria",
-  slogan: "Pizza artesanal no forno a lenha",
+  nome: "Forno & Lenha",
+  slogan: "Pizzas no forno a lenha, xis e lanches na chapa",
   cidade: "Delivery na sua região",
   whatsapp: "5555996822565",
   instagram: "tech.rb7",
@@ -28,7 +28,18 @@ window.BORDAS = [
   { nome: "Borda de chocolate", preco: 12 },
 ];
 
-// preco: valores por tamanho (M, G, GG). meia: pode ser meio a meio com outro sabor da mesma categoria.
+// Adicionais dos lanches (itens com adic: true). Cada um soma no preço do lanche.
+window.ADICIONAIS = [
+  { nome: "Bacon", preco: 5 },
+  { nome: "Ovo", preco: 3 },
+  { nome: "Cheddar", preco: 4 },
+  { nome: "Catupiry", preco: 4 },
+  { nome: "Hambúrguer extra", preco: 8 },
+  { nome: "Calabresa", preco: 4 },
+  { nome: "Milho e ervilha", preco: 2 },
+];
+
+// preco: valores por tamanho (M, G, GG) ou { unico }. meia: pode ser meio a meio com outro sabor da mesma categoria.
 window.CARDAPIO = [
   { cat: "Pizzas salgadas", itens: [
     { id: "mussarela", nome: "Mussarela", desc: "Molho de tomate artesanal, mussarela e orégano.", preco: { M: 44.9, G: 56.9, GG: 69.9 }, img: "img/u5.jpg", meia: true },
@@ -48,8 +59,31 @@ window.CARDAPIO = [
     { id: "brigadeiro", nome: "Brigadeiro", desc: "Brigadeiro cremoso com granulado.", preco: { M: 44.9, G: 56.9, GG: 69.9 }, img: "img/doce1.jpg", meia: true },
     { id: "romeujulieta", nome: "Romeu e Julieta", desc: "Mussarela com goiabada cremosa.", preco: { M: 42.9, G: 54.9, GG: 66.9 }, img: "img/doce3.jpg", meia: true },
   ]},
+  { cat: "Xis", itens: [
+    { id: "xsalada", nome: "Xis Salada", desc: "Pão de xis prensado, hambúrguer, queijo, presunto, ovo, alface, tomate, milho, ervilha e maionese da casa.", preco: { unico: 29.9 }, img: "img/l4.jpg", adic: true, top: true },
+    { id: "xbacon", nome: "Xis Bacon", desc: "Hambúrguer, bacon crocante, queijo, presunto, ovo, alface, tomate, milho e maionese.", preco: { unico: 34.9 }, img: "img/l5.jpg", adic: true, top: true },
+    { id: "xcoracao", nome: "Xis Coração", desc: "Coração de frango na chapa, queijo, presunto, ovo, alface, tomate, milho e maionese.", preco: { unico: 36.9 }, img: "img/l2.jpg", adic: true },
+    { id: "xfrango", nome: "Xis Frango", desc: "Frango desfiado temperado, catupiry, queijo, alface, tomate, milho e maionese.", preco: { unico: 32.9 }, img: "img/l6.jpg", adic: true },
+    { id: "xcalabresa", nome: "Xis Calabresa", desc: "Calabresa acebolada, hambúrguer, queijo, ovo, alface, tomate e maionese.", preco: { unico: 33.9 }, img: "img/l1.jpg", adic: true },
+    { id: "xtudo", nome: "Xis Tudo", desc: "Hambúrguer, bacon, calabresa, coração, frango, queijo, presunto, ovo, alface, tomate, milho e maionese. Para quem chega com fome!", preco: { unico: 44.9 }, img: "img/l2.jpg", adic: true, top: true },
+  ]},
+  { cat: "Hambúrgueres", itens: [
+    { id: "classico", nome: "Burger Clássico", desc: "Pão brioche, blend de 150 g, queijo cheddar, alface, tomate e molho da casa.", preco: { unico: 27.9 }, img: "img/l1.jpg", adic: true },
+    { id: "smash", nome: "Smash Duplo Bacon", desc: "Dois smash de 90 g, cheddar duplo, bacon e cebola caramelizada.", preco: { unico: 34.9 }, img: "img/l2.jpg", adic: true, top: true },
+    { id: "crispy", nome: "Chicken Crispy", desc: "Frango empanado crocante, molho barbecue, picles e salada.", preco: { unico: 29.9 }, img: "img/l6.jpg", adic: true },
+  ]},
+  { cat: "Cachorro-quente", itens: [
+    { id: "dogsimples", nome: "Cachorro-quente Simples", desc: "Pão, salsicha, molho de tomate, milho, ervilha e batata palha.", preco: { unico: 16.9 }, img: "img/hd2.jpg", adic: true },
+    { id: "dogcompleto", nome: "Cachorro-quente Completo", desc: "Duas salsichas, molho, milho, ervilha, purê, queijo ralado, batata palha e maionese.", preco: { unico: 22.9 }, img: "img/hd1.jpg", adic: true, top: true },
+  ]},
+  { cat: "Porções", itens: [
+    { id: "batata", nome: "Batata Frita", desc: "Porção de 400 g, crocante e bem sequinha.", preco: { unico: 22.9 }, img: "img/fr2.jpg" },
+    { id: "batatacb", nome: "Batata com Cheddar e Bacon", desc: "Porção de 400 g coberta com cheddar cremoso e bacon.", preco: { unico: 32.9 }, img: "img/fr1.jpg", top: true },
+  ]},
   { cat: "Combos", itens: [
-    { id: "combonoite", nome: "Combo Fechar a Noite", desc: "1 pizza grande salgada + 1 pizza média doce + refrigerante 2L.", preco: { unico: 109.9 }, img: "img/u12.jpg", combo: true, top: true },
+    { id: "comboxis", nome: "Combo Xis", desc: "1 Xis Salada + batata frita pequena + refrigerante lata.", preco: { unico: 42.9 }, img: "img/l3.jpg", combo: true, top: true },
+    { id: "combodupla", nome: "Combo Dupla de Lanches", desc: "2 Burgers Clássicos + batata frita + 2 refrigerantes lata.", preco: { unico: 69.9 }, img: "img/l7.jpg", combo: true },
+    { id: "combonoite", nome: "Combo Fechar a Noite", desc: "1 pizza grande salgada + 1 pizza média doce + refrigerante 2L.", preco: { unico: 109.9 }, img: "img/u12.jpg", combo: true },
     { id: "combocasal", nome: "Combo Casal", desc: "1 pizza média salgada + refrigerante lata.", preco: { unico: 54.9 }, img: "img/u12.jpg", combo: true },
   ]},
   { cat: "Bebidas", itens: [
