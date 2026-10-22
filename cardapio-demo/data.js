@@ -16,9 +16,9 @@ window.LOJA = {
 };
 
 window.TAMANHOS = [
-  { id: "M", nome: "Média", info: "6 fatias" },
-  { id: "G", nome: "Grande", info: "8 fatias" },
-  { id: "GG", nome: "Gigante", info: "12 fatias" },
+  { id: "M", nome: "Média", info: "6 fatias", sabores: 2 },
+  { id: "G", nome: "Grande", info: "8 fatias", sabores: 3 },
+  { id: "GG", nome: "Gigante", info: "12 fatias", sabores: 4 },
 ];
 
 window.BORDAS = [
@@ -39,7 +39,7 @@ window.ADICIONAIS = [
   { nome: "Milho e ervilha", preco: 2 },
 ];
 
-// preco: valores por tamanho (M, G, GG) ou { unico }. meia: pode ser meio a meio com outro sabor da mesma categoria.
+// preco: valores por tamanho (M, G, GG) ou { unico }. meia: pode dividir a pizza com outros sabores da mesma categoria (até TAMANHOS[].sabores).
 window.CARDAPIO = [
   { cat: "Pizzas salgadas", itens: [
     { id: "mussarela", nome: "Mussarela", desc: "Molho de tomate artesanal, mussarela e orégano.", preco: { M: 44.9, G: 56.9, GG: 69.9 }, img: "img/u5.jpg", meia: true },

@@ -73,33 +73,53 @@
 
   function abrirItem(id) {
     cur = ITENS.find((i) => i.id === id); if (!cur) return;
-    sel = { tam: pizza(cur) ? "G" : null, meia: "", borda: 0, adic: [], qtd: 1 };
+    sel = { tam: pizza(cur) ? "G" : null, sab: [cur.id], borda: 0, adic: [], qtd: 1 };
     $("#itImg").src = cur.img; $("#itImg").style.objectPosition = cur.pos || "50% 50%";
     $("#itNome").textContent = cur.nome; $("#itDesc").textContent = cur.desc; $("#itObs").value = "";
     $("#blkTam").hidden = !pizza(cur); $("#blkBorda").hidden = !pizza(cur); $("#blkMeia").hidden = !cur.meia; $("#blkAdic").hidden = !cur.adic;
     if (cur.adic) $("#optAdic").innerHTML = ADIC.map((a, i) => `<button class="opt-btn" data-adic="${i}"><span>${esc(a.nome)}</span><span>+ ${brl(a.preco)}</span></button>`).join("");
     if (pizza(cur)) {
-      $("#optTam").innerHTML = TAM.map((t) => `<button class="opt-btn${t.id === sel.tam ? " is-on" : ""}" data-tam="${t.id}">${t.nome}<small>${t.info}</small><b>${brl(cur.preco[t.id])}</b></button>`).join("");
+      $("#optTam").innerHTML = TAM.map((t) => `<button class="opt-btn${t.id === sel.tam ? " is-on" : ""}" data-tam="${t.id}">${t.nome}<small>${t.info}</small><small>até ${t.sabores} sabores</small><b>${brl(cur.preco[t.id])}</b></button>`).join("");
       $("#optBorda").innerHTML = BORDAS.map((b, i) => `<button class="opt-btn${i === 0 ? " is-on" : ""}" data-borda="${i}"><span>${esc(b.nome)}</span><span>${b.preco ? "+ " + brl(b.preco) : ""}</span></button>`).join("");
     }
-    if (cur.meia) {
-      const outros = ITENS.filter((i) => i.cat === cur.cat && i.meia && i.id !== cur.id);
-      $("#selMeia").innerHTML = `<option value="">Não, pizza inteira de ${esc(cur.nome)}</option>` + outros.map((o) => `<option value="${o.id}">½ ${esc(cur.nome)} + ½ ${esc(o.nome)}</option>`).join("");
-    }
+    if (cur.meia) renderSabores();
     atualizaItem();
     abrir("#itemSheet");
   }
+  // Sabores da pizza: o tamanho define quantos cabem; vale o preço do sabor mais caro.
+  const maxSab = () => TAM.find((t) => t.id === sel.tam).sabores || 1;
+  function renderSabores() {
+    const max = maxSab();
+    const opcoes = ITENS.filter((i) => i.cat === cur.cat && i.meia);
+    $("#optSab").innerHTML = opcoes.map((o) => `<button class="opt-btn${sel.sab.includes(o.id) ? " is-on" : ""}" data-sab="${o.id}"><span>${esc(o.nome)}</span><span>${brl(o.preco[sel.tam])}</span></button>`).join("");
+    $("#sabCount").textContent = `${sel.sab.length} de ${max}`;
+    const livres = max - sel.sab.length;
+    $("#sabHint").textContent = (livres > 0 ? `Você pode escolher mais ${livres} ${livres === 1 ? "sabor" : "sabores"}. ` : "Número máximo de sabores para este tamanho. ") + "Vale o valor do sabor mais caro.";
+  }
   function precoItem() {
     if (!pizza(cur)) return cur.preco.unico + sel.adic.reduce((s, i) => s + ADIC[i].preco, 0);
-    let p = cur.preco[sel.tam];
-    if (sel.meia) p = Math.max(p, ITENS.find((i) => i.id === sel.meia).preco[sel.tam]);
+    const p = Math.max(...sel.sab.map((id) => ITENS.find((i) => i.id === id).preco[sel.tam]));
     return p + BORDAS[sel.borda].preco;
   }
   function atualizaItem() {
     $("#qVal").textContent = sel.qtd;
     $("#itPreco").textContent = brl(precoItem() * sel.qtd);
   }
-  $("#optTam").addEventListener("click", (e) => { const b = e.target.closest("[data-tam]"); if (!b) return; sel.tam = b.dataset.tam; document.querySelectorAll("#optTam .opt-btn").forEach((x) => x.classList.toggle("is-on", x === b)); atualizaItem(); });
+  $("#optTam").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tam]"); if (!b) return;
+    sel.tam = b.dataset.tam; document.querySelectorAll("#optTam .opt-btn").forEach((x) => x.classList.toggle("is-on", x === b));
+    if (sel.sab.length > maxSab()) { sel.sab = sel.sab.slice(0, maxSab()); toast(`Esse tamanho aceita até ${maxSab()} sabores`); }
+    if (cur.meia) renderSabores();
+    atualizaItem();
+  });
+  $("#optSab").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sab]"); if (!b) return;
+    const id = b.dataset.sab, k = sel.sab.indexOf(id);
+    if (k >= 0) { if (sel.sab.length === 1) return toast("Escolha pelo menos 1 sabor"); sel.sab.splice(k, 1); }
+    else if (sel.sab.length >= maxSab()) return toast(`Esse tamanho aceita até ${maxSab()} sabores`);
+    else sel.sab.push(id);
+    renderSabores(); atualizaItem();
+  });
   $("#optBorda").addEventListener("click", (e) => { const b = e.target.closest("[data-borda]"); if (!b) return; sel.borda = Number(b.dataset.borda); document.querySelectorAll("#optBorda .opt-btn").forEach((x) => x.classList.toggle("is-on", x === b)); atualizaItem(); });
   $("#optAdic").addEventListener("click", (e) => {
     const b = e.target.closest("[data-adic]"); if (!b) return;
@@ -107,18 +127,19 @@
     if (k < 0) sel.adic.push(i); else sel.adic.splice(k, 1);
     b.classList.toggle("is-on", k < 0); atualizaItem();
   });
-  $("#selMeia").addEventListener("change", (e) => { sel.meia = e.target.value; atualizaItem(); });
   $("#qMenos").addEventListener("click", () => { if (sel.qtd > 1) { sel.qtd--; atualizaItem(); } });
   $("#qMais").addEventListener("click", () => { sel.qtd++; atualizaItem(); });
   $("#itAdd").addEventListener("click", () => {
     const tam = pizza(cur) ? TAM.find((t) => t.id === sel.tam) : null;
     const det = [];
     if (tam) det.push(`${tam.nome} (${tam.info})`);
-    if (sel.meia) det.push(`½ ${cur.nome} + ½ ${ITENS.find((i) => i.id === sel.meia).nome}`);
+    const sabores = pizza(cur) ? sel.sab.map((id) => ITENS.find((i) => i.id === id).nome) : [];
+    if (sabores.length > 1) det.push(`${sabores.length} sabores: ${sabores.join(", ")}`);
     if (pizza(cur) && sel.borda) det.push(BORDAS[sel.borda].nome);
     if (sel.adic.length) det.push("Adicionais: " + sel.adic.map((i) => ADIC[i].nome).join(", "));
     const obs = $("#itObs").value.trim(); if (obs) det.push("Obs.: " + obs);
-    cart.push({ nome: cur.nome, det, unit: precoItem(), qtd: sel.qtd });
+    const nome = sabores.length > 1 ? `Pizza ${tam.nome} ${sabores.length} sabores` : cur.nome;
+    cart.push({ nome, det, unit: precoItem(), qtd: sel.qtd });
     save(); renderCart(); fechar("#itemSheet");
     const bar = $("#cartbar"); bar.classList.remove("bump"); void bar.offsetWidth; bar.classList.add("bump");
     toast("Adicionado ao pedido ✓");
