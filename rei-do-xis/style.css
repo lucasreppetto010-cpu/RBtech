@@ -125,3 +125,10 @@ textarea.input { resize: vertical; }
 .toast { position: fixed; left: 50%; bottom: 90px; transform: translate(-50%, 16px); background: #fff; color: #111; padding: 10px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600; opacity: 0; pointer-events: none; transition: .25s; z-index: 60; white-space: nowrap; }
 .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+/* Sem foto de capa nem fotos dos itens */
+.cover--cor { height: 120px; background: linear-gradient(160deg, #a30d0f, #5e0708); }
+.cover--cor::after { background: linear-gradient(180deg, rgba(12,12,12,0), var(--bg)); }
+.item--sem-foto { grid-template-columns: 1fr; }
+.it__img[hidden] { display: none; }
+.it__body h2 { padding-right: 44px; }

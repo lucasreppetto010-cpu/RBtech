@@ -14,11 +14,12 @@
 
   // ---------- Topo ----------
   document.title = L.nome + " | Cardápio";
-  $("#cover").style.backgroundImage = `url(${L.capa})`;
+  if (L.capa) $("#cover").style.backgroundImage = `url(${L.capa})`; else $("#cover").classList.add("cover--cor");
   $("#logo").src = L.logo; $("#logoFoot").src = L.logo;
   $("#nome").textContent = L.nome;
   $("#slogan").textContent = L.slogan;
-  $("#tempo").textContent = "⏱ " + L.tempoEntrega;
+  if (L.tempoEntrega) $("#tempo").textContent = "⏱ " + L.tempoEntrega;
+  else { $("#tempo").hidden = true; $(".meta-dot").hidden = true; }
   $("#cidade").textContent = "📍 " + L.cidade;
   $("#horarioTxt").textContent = L.horario.texto;
   $("#igLink").href = "https://www.instagram.com/" + L.instagram + "/";
@@ -44,13 +45,13 @@
     <section class="sec" id="${slug(c.cat)}">
       <h2>${esc(c.cat)}</h2>
       ${c.itens.map((it) => `
-        <button class="item" data-id="${it.id}">
+        <button class="item${it.img ? "" : " item--sem-foto"}" data-id="${it.id}">
           <div>
             <p class="item__name">${esc(it.nome)}${it.tag ? '<span class="tag">' + esc(it.tag) + '</span>' : ""}</p>
             <p class="item__desc">${esc(it.desc)}</p>
             <span class="item__price">${it.preco.unico ? "" : "<small>a partir de </small>"}${brl(precoMin(it))}</span>
           </div>
-          <img src="${it.img}" alt="" loading="lazy" style="object-position:${it.pos || "50% 50%"}" />
+          ${it.img ? `<img src="${it.img}" alt="" loading="lazy" style="object-position:${it.pos || "50% 50%"}" />` : ""}
         </button>`).join("")}
     </section>`).join("");
 
@@ -74,7 +75,8 @@
   function abrirItem(id) {
     cur = ITENS.find((i) => i.id === id); if (!cur) return;
     sel = { tam: pizza(cur) ? "G" : null, sab: [cur.id], borda: 0, adic: [], qtd: 1 };
-    $("#itImg").src = cur.img; $("#itImg").style.objectPosition = cur.pos || "50% 50%";
+    $("#itImg").hidden = !cur.img;
+    if (cur.img) { $("#itImg").src = cur.img; $("#itImg").style.objectPosition = cur.pos || "50% 50%"; }
     $("#itNome").textContent = cur.nome; $("#itDesc").textContent = cur.desc; $("#itObs").value = "";
     $("#blkTam").hidden = !pizza(cur); $("#blkBorda").hidden = !pizza(cur) || !BORDAS.length; $("#blkMeia").hidden = !cur.meia; $("#blkAdic").hidden = !cur.adic || !ADIC.length;
     if (cur.adic) $("#optAdic").innerHTML = ADIC.map((a, i) => `<button class="opt-btn" data-adic="${i}"><span>${esc(a.nome)}</span><span>+ ${brl(a.preco)}</span></button>`).join("");
