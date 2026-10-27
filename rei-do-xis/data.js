@@ -14,8 +14,8 @@ window.LOJA = {
   taxaEntrega: "a combinar pelo WhatsApp",
   // Banco onde o pedido é salvo para o painel da loja imprimir na térmica (chave anon: só permite criar pedido)
   pedidos: {
-    url: "https://wcgdrbdsxgbpbcfxdoiw.supabase.co",
-    chave: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZ2RyYmRzeGdicGJjZnhkb2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDc5MTAsImV4cCI6MjEwODY4MzkxMH0.wZm2NQemw5AsYjm23LWGMN6qEA9Z-H_hIVhcwUr5tZQ",
+    url: "https://vumenohrsvnsjhycdlex.supabase.co",
+    chave: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bWVub2hyc3Zuc2poeWNkbGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzA1NTYsImV4cCI6MjEwODcwNjU1Nn0.g7uScmq2jGTz-Q5-2n7K1eupkDpgXEZ-LXKIuR4Q_gQ",
     tabela: "pedidos_reidoxis",
   },
 };
