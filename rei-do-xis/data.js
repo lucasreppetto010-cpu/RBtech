@@ -21,7 +21,7 @@ window.BORDAS = [];
 window.ADICIONAIS = [];
 
 window.CARDAPIO = [
-  { cat: "Burgers", itens: [
+  { cat: "Cardápio", itens: [
     { id: "burger", nome: "Burger", desc: "Pão, maionese caseira, tomate, hambúrguer bovino 180g e queijo.", preco: { unico: 30 } },
     { id: "burgeramericano", nome: "Burger Americano", desc: "Pão, maionese caseira, hambúrguer bovino 140g e queijo.", preco: { unico: 26 } },
     { id: "burgerbacon", nome: "Burger Bacon", desc: "Pão, maionese caseira, alface, tomate, hambúrguer bovino 180g, bacon e queijo.", preco: { unico: 34 } },
@@ -29,40 +29,32 @@ window.CARDAPIO = [
     { id: "chesseburger", nome: "Chesse Burger", desc: "Pão, molho, hambúrguer bovino e queijo cheddar.", preco: { unico: 25 } },
     { id: "burgerdbacon", nome: "Burger Double Bacon", desc: "Pão, maionese caseira, alface, tomate, 2x hambúrguer bovino, 2x bacon e 2x queijo.", preco: { unico: 42 } },
     { id: "texasburger", nome: "Texas Burger", desc: "Pão, maionese caseira, alface, tomate, hambúrguer bovino, queijo e cebola crocante.", preco: { unico: 34 } },
-  ]},
-  { cat: "Chivito, Pancho e Galinhão", itens: [
     { id: "chivito", nome: "Chivito", desc: "Pão, maionese caseira, ketchup, mostrada, alface, tomate, azeitona, filé, presunto e queijo.", preco: { unico: 37 } },
     { id: "panchosimples", nome: "Pancho Simples", desc: "Pão, maionese caseira, ketchup, mostrada, salsicha queijo ou batata palha.", preco: { unico: 10 } },
     { id: "panchocompleto", nome: "Pancho Completo", desc: "Pão, maionese caseira, ketchup, mostrada, salsicha, alface, tomate, queijo e batata palha.", preco: { unico: 13 } },
     { id: "panchobacon", nome: "Pancho Bacon Mussa", desc: "Pão, maionese caseira, ketchup, mostrada, salsicha, bacon, mussarela e batata palha.", preco: { unico: 21 } },
     { id: "galinhao", nome: "Galinhão", desc: "Pão, maionese caseira, ketchup, mostrada, alface, tomate, frango e mussarela.", preco: { unico: 21 } },
-  ]},
-  { cat: "Torradas", itens: [
     { id: "torradasimples", nome: "Torrada Simples", desc: "Pão de sanduíche, presunto, queijo e maionese caseira.", preco: { unico: 12 } },
     { id: "torradacompleta", nome: "Torrada Completa", desc: "Pão de sanduíche, ovo, carne, bacon, presunto, queijo e maionese caseira.", preco: { unico: 20 } },
     { id: "torradasimplesm", nome: "Torrada Simples c/ Mussarela Derretida", desc: "Pão de sanduíche, presunto, queijo, maionese caseira e e queijo mussarela derretido.", preco: { unico: 16 } },
     { id: "torradacompletam", nome: "Torrada Completa c/ Mussarela Derretida", desc: "Pão de sanduíche, ovo, carne, bacon, presunto, queijo, maionese caseira e queijo mussarela derretido.", preco: { unico: 24 } },
-  ]},
-  { cat: "Porções", itens: [
     { id: "fritasmini", nome: "Fritas Mini", desc: "Porção pequena de batata frita.", preco: { unico: 10 } },
     { id: "fritas", nome: "Fritas", desc: "Porção de batata frita.", preco: { unico: 20 } },
     { id: "fritascompleta", nome: "Fritas Completa", desc: "Porção de batata frita com mussarela e bacon.", preco: { unico: 27 } },
     { id: "aneis", nome: "Anéis de Cebola", desc: "Porção de anéis de cebola.", preco: { unico: 26 } },
     { id: "polenta", nome: "Polenta Frita", desc: "Porção de polenta frita.", preco: { unico: 27 } },
-  ]},
-  { cat: "Bebidas", itens: [
     { id: "lata", nome: "Refrigerante Lata", desc: "Coca-Cola, Fanta ou Sprite 350ml.", preco: { unico: 10 } },
     { id: "pet2l", nome: "Refrigerante Pet 2 Litros", desc: "Coca-Cola, Fanta ou Sprite 2 litros.", preco: { unico: 17 } },
     { id: "litrao", nome: "Cerveja Litrão", desc: "Cerveja 1 litro. (Consulte Rótulo disponível)", preco: { unico: 19 } },
     { id: "delvale", nome: "Suco Del Vale", desc: "Suco 200ml. (Sabores Variados)", preco: { unico: 8 } },
     { id: "agua", nome: "Água Mineral", desc: "Água mineral 500ml.", preco: { unico: 6 } },
+    { id: "maiscombo", nome: "+ Combo", desc: "Batata Mini + Refrigerante 350ml", preco: { unico: 18 } },
   ]},
   { cat: "Combos", itens: [
     { id: "combofamilia", nome: "Combo Família", desc: "1 xis doble + 1 xis entrevero + 1 xis bacon + Coca-Cola 2L", preco: { unico: 115 } },
     { id: "combo1", nome: "Combo 1", desc: "1 xis bacon + 1 xis coração + Coca-Cola 2L", preco: { unico: 77 } },
     { id: "combo2", nome: "Combo 2", desc: "1 xis frango + 1 xis salada + 1 porção de fritas completa", preco: { unico: 76 } },
     { id: "combo3", nome: "Combo 3", desc: "1 xis cheddar + 1 xis bacon + 1 Coca-Cola 2L + fritas média", preco: { unico: 95 } },
-    { id: "maiscombo", nome: "+ Combo", desc: "Batata Mini + Refrigerante 350ml", preco: { unico: 18 } },
   ]},
   { cat: "Cardápio X", itens: [
     { id: "xsalada", nome: "X-Salada", desc: "Pão, maionese caseira, ketchup, mostrada, alface, tomate, bife, ovo, presunto e queijo.", preco: { unico: 26 } },
