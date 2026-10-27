@@ -12,8 +12,12 @@ window.LOJA = {
   horario: { dias: [0, 1, 2, 3, 4, 5, 6], abre: "19:30", fecha: "02:00", texto: "Das 19:30 às 2:00" },
   tempoEntrega: "",
   taxaEntrega: "a combinar pelo WhatsApp",
-  // Link da via de impressão (impressora térmica) que vai junto no pedido
-  impressao: "https://techrb.netlify.app/rei-do-xis/imprimir.html",
+  // Banco onde o pedido é salvo para o painel da loja imprimir na térmica (chave anon: só permite criar pedido)
+  pedidos: {
+    url: "https://wcgdrbdsxgbpbcfxdoiw.supabase.co",
+    chave: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZ2RyYmRzeGdicGJjZnhkb2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDc5MTAsImV4cCI6MjEwODY4MzkxMH0.wZm2NQemw5AsYjm23LWGMN6qEA9Z-H_hIVhcwUr5tZQ",
+    tabela: "pedidos_reidoxis",
+  },
 };
 
 window.TAMANHOS = [];

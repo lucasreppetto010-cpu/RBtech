@@ -175,9 +175,14 @@
     const num = String(agora.getHours()).padStart(2, "0") + String(agora.getMinutes()).padStart(2, "0") + "-" + Math.floor(Math.random() * 90 + 10);
     const endereco = entrega === "Entrega" ? `${$("#endRua").value.trim()} - ${$("#endBairro").value.trim()}${$("#endRef").value.trim() ? " (" + $("#endRef").value.trim() + ")" : ""}` : "";
     const pagTxt = `${pag}${pag === "Dinheiro" && $("#troco").value.trim() ? " (troco para " + $("#troco").value.trim() + ")" : ""}`;
-    // Via de impressão: o pedido vai no fim do link (#...), não passa por servidor nenhum
-    const via = { n: num, d: agora.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }), c: nome, i: cart.map((i) => [i.qtd, i.nome, i.unit, i.det]), s: total(), e: endereco, p: pagTxt };
-    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(via)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    // Pedido salvo no banco: o painel da loja recebe na hora e imprime na térmica
+    if (L.pedidos) {
+      fetch(`${L.pedidos.url}/rest/v1/${L.pedidos.tabela}`, {
+        method: "POST", keepalive: true,
+        headers: { apikey: L.pedidos.chave, Authorization: `Bearer ${L.pedidos.chave}`, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ numero: num, cliente: nome || null, itens: cart.map((i) => ({ qtd: i.qtd, nome: i.nome, unit: i.unit, det: i.det })), total: total(), entrega: endereco || null, pagamento: pagTxt }),
+      }).catch(() => { /* o pedido segue pelo WhatsApp mesmo sem o painel */ });
+    }
     const linhas = [
       `*Novo pedido · ${L.nome}* (nº ${num})`,
       nome ? `Cliente: ${nome}` : null,
@@ -187,8 +192,6 @@
       `*Subtotal: ${brl(total())}*`,
       entrega === "Entrega" ? `Entrega: ${endereco}` : "Retirada no local",
       `Pagamento: ${pagTxt}`,
-      L.impressao ? "" : null,
-      L.impressao ? `Imprimir pedido: ${L.impressao}#${b64}` : null,
     ].filter((l) => l !== null).join("\n");
     window.open(`https://wa.me/${L.whatsapp}?text=${encodeURIComponent(linhas)}`, "_blank", "noopener");
   });

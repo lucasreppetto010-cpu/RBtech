@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Painel de pedidos · Rei do Xis</title>
+  <link rel="icon" href="../img/logo.jpg" />
+  <style>
+    :root { --bg: #0c0c0c; --card: #171717; --line: #2a2a2a; --ink: #f5f5f5; --muted: #a3a3a3; --red: #c8161d; --yellow: #f9a51a; --green: #2bb24c; --w: 72mm; }
+    body.w58 { --w: 48mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, "Segoe UI", sans-serif; }
+    header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    header img { width: 48px; height: 48px; border-radius: 50%; }
+    header h1 { margin: 0; font-size: 18px; flex: 1; }
+    .st { font-size: 14px; font-weight: 600; }
+    .st.ok { color: var(--green); } .st.off { color: var(--red); }
+    button { font: 600 14px system-ui, sans-serif; border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; background: #2a2a2a; color: #fff; }
+    button.main { background: var(--red); }
+    button.on { outline: 2px solid var(--yellow); }
+    main { max-width: 760px; margin: 0 auto; padding: 18px; }
+    .dica { background: #1d1a10; border: 1px solid #4a3c12; color: #f3d48a; border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-bottom: 16px; }
+    .ped { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+    .ped.novo { border-color: var(--yellow); }
+    .ped__info { flex: 1; font-size: 14px; line-height: 1.45; }
+    .ped__top { font-weight: 700; font-size: 15px; }
+    .ped__imp { font-size: 12.5px; color: var(--muted); }
+    .vazio { color: var(--muted); text-align: center; padding: 40px 0; }
+    .login { max-width: 340px; margin: 60px auto; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+    .login h2 { margin: 0 0 14px; font-size: 18px; }
+    .login input { width: 100%; font: 15px system-ui, sans-serif; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: #0f0f0f; color: #fff; margin-bottom: 10px; }
+    .login button { width: 100%; }
+    .erro { color: #ff7b7b; font-size: 13.5px; min-height: 18px; }
+    /* Via que vai para a impressora térmica */
+    #via { display: none; }
+    .v { width: var(--w); font-family: "Courier New", Courier, monospace; color: #000; font-size: 12px; line-height: 1.35; }
+    body.w58 .v { font-size: 10.5px; }
+    .v .c { text-align: center; } .v .big { font-size: 1.5em; font-weight: 700; } .v .b { font-weight: 700; }
+    .v hr { border: 0; border-top: 1px dashed #000; margin: 6px 0; }
+    .v .row { display: flex; justify-content: space-between; gap: 6px; }
+    .v .det { padding-left: 10px; font-size: .92em; }
+    .v .tot { font-size: 1.25em; font-weight: 700; }
+    @page { margin: 0; }
+    @media print {
+      body { background: #fff; }
+      body > *:not(#via) { display: none !important; }
+      #via { display: block; padding: 0 1mm; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
+  <script src="../data.js"></script>
+</head>
+<body>
+  <header>
+    <img src="../img/logo.jpg" alt="" />
+    <h1>Painel de pedidos do site</h1>
+    <span class="st off" id="st">Desconectado</span>
+  </header>
+
+  <div class="login" id="login" hidden>
+    <h2>Entrar no painel</h2>
+    <input id="email" type="email" placeholder="E-mail" autocomplete="username" />
+    <input id="senha" type="password" placeholder="Senha" autocomplete="current-password" />
+    <p class="erro" id="erro"></p>
+    <button class="main" id="entrar">Entrar</button>
+  </div>
+
+  <main id="app" hidden>
+    <div class="dica" id="dica">Deixe esta tela aberta. Cada pedido feito pelo site aparece aqui e sai sozinho na impressora térmica.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="main" id="teste">Imprimir teste</button>
+      <button id="b80">80 mm</button>
+      <button id="b58">58 mm</button>
+      <button id="som">Ativar som</button>
+      <button id="sair" style="margin-left:auto">Sair</button>
+    </div>
+    <div id="lista"></div>
+  </main>
+
+  <div id="via"></div>
+
+  <script>
+    (function () {
+      const P = window.LOJA.pedidos;
+      const sb = window.supabase.createClient(P.url, P.chave);
+      const $ = (s) => document.querySelector(s);
+      const brl = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const hora = (d) => new Date(d).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+      let pedidos = [], fila = [], imprimindo = false, canal = null, timer = null;
+      const jaImpressos = new Set();
+
+      // ---------- Largura da via ----------
+      const set = (w) => { document.body.classList.toggle("w58", w === 58); $("#b80").classList.toggle("on", w === 80); $("#b58").classList.toggle("on", w === 58); try { localStorage.setItem("via_largura", w); } catch (e) {} };
+      let w = 80; try { w = Number(localStorage.getItem("via_largura")) || 80; } catch (e) {}
+      set(w); $("#b80").onclick = () => set(80); $("#b58").onclick = () => set(58);
+
+      // ---------- Som de pedido novo ----------
+      let audio = null;
+      $("#som").onclick = () => { audio = audio || new AudioContext(); audio.resume(); bip(); $("#som").textContent = "Som ativado"; $("#som").classList.add("on"); };
+      function bip() {
+        try {
+          audio = audio || new AudioContext();
+          [0, 0.25].forEach((t) => { const o = audio.createOscillator(), g = audio.createGain(); o.frequency.value = 880; o.connect(g); g.connect(audio.destination); g.gain.setValueAtTime(0.3, audio.currentTime + t); o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.18); });
+        } catch (e) { /* sem som */ }
+      }
+
+      // ---------- Via ----------
+      function via(p) {
+        return `<div class="v">
+          <div class="c big">REI DO XIS</div>
+          <div class="c">Pedido pelo site</div>
+          <hr>
+          <div class="c big">PEDIDO ${esc(p.numero)}</div>
+          <div class="c">${hora(p.criado_em)}</div>
+          ${p.cliente ? `<div>Cliente: <span class="b">${esc(p.cliente)}</span></div>` : ""}
+          <hr>
+          ${(p.itens || []).map((i) => `
+            <div class="row b"><span>${i.qtd}x ${esc(i.nome)}</span><span>${brl(i.unit * i.qtd)}</span></div>
+            ${(i.det || []).map((d) => `<div class="det">${esc(d)}</div>`).join("")}`).join("")}
+          <hr>
+          <div class="row tot"><span>TOTAL</span><span>${brl(p.total)}</span></div>
+          <hr>
+          <div class="b">${p.entrega ? "ENTREGA" : "RETIRADA NO LOCAL"}</div>
+          ${p.entrega ? `<div>${esc(p.entrega)}</div>` : ""}
+          <div>Pagamento: <span class="b">${esc(p.pagamento)}</span></div>
+          <hr><div class="c">.</div>
+        </div>`;
+      }
+      function imprimir(p) {
+        return new Promise((ok) => {
+          $("#via").innerHTML = via(p);
+          const fim = () => { window.removeEventListener("afterprint", fim); clearTimeout(t); ok(); };
+          const t = setTimeout(fim, 4000);
+          window.addEventListener("afterprint", fim);
+          setTimeout(() => window.print(), 50);
+        });
+      }
+      async function rodarFila() {
+        if (imprimindo) return;
+        imprimindo = true;
+        while (fila.length) {
+          const p = fila.shift();
+          await imprimir(p);
+          if (p.id) {
+            jaImpressos.add(p.id);
+            const { error } = await sb.from(P.tabela).update({ impresso_em: new Date().toISOString() }).eq("id", p.id);
+            if (!error) { const x = pedidos.find((q) => q.id === p.id); if (x) x.impresso_em = new Date().toISOString(); render(); }
+          }
+        }
+        imprimindo = false;
+      }
+      function novo(p) {
+        if (!pedidos.some((q) => q.id === p.id)) pedidos.unshift(p);
+        if (!p.impresso_em && !jaImpressos.has(p.id) && !fila.some((q) => q.id === p.id)) { bip(); fila.push(p); rodarFila(); }
+        render();
+      }
+
+      // ---------- Lista ----------
+      function render() {
+        $("#lista").innerHTML = pedidos.length ? pedidos.map((p) => `
+          <div class="ped${p.impresso_em ? "" : " novo"}">
+            <div class="ped__info">
+              <div class="ped__top">Pedido ${esc(p.numero)} · ${brl(p.total)}${p.cliente ? " · " + esc(p.cliente) : ""}</div>
+              <div>${(p.itens || []).map((i) => `${i.qtd}x ${esc(i.nome)}`).join(", ")}</div>
+              <div>${p.entrega ? "Entrega: " + esc(p.entrega) : "Retirada no local"} · ${esc(p.pagamento)}</div>
+              <div class="ped__imp">${hora(p.criado_em)} · ${p.impresso_em ? "impresso" : "aguardando impressão"}</div>
+            </div>
+            <button data-re="${p.id}">Reimprimir</button>
+          </div>`).join("") : '<p class="vazio">Nenhum pedido do site nas últimas 12 horas.</p>';
+      }
+      $("#lista").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-re]"); if (!b) return;
+        const p = pedidos.find((q) => String(q.id) === b.dataset.re);
+        if (p) { fila.push({ ...p, id: null }); rodarFila(); }
+      });
+      $("#teste").onclick = () => { fila.push({ id: null, numero: "TESTE", criado_em: new Date().toISOString(), cliente: "Teste de impressão", itens: [{ qtd: 1, nome: "X-Do Rei", unit: 31, det: [] }], total: 31, entrega: null, pagamento: "Pix" }); rodarFila(); };
+
+      // ---------- Conexão ----------
+      async function buscar() {
+        const desde = new Date(Date.now() - 12 * 3600e3).toISOString();
+        const { data, error } = await sb.from(P.tabela).select("*").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(100);
+        if (error) { status(false); return; }
+        status(true);
+        pedidos = data; render();
+        data.slice().reverse().forEach((p) => { if (!p.impresso_em) novo(p); });
+      }
+      function status(ok) { $("#st").textContent = ok ? "● Conectado · aguardando pedidos" : "● Sem conexão"; $("#st").className = "st " + (ok ? "ok" : "off"); }
+      async function iniciar() {
+        $("#login").hidden = true; $("#app").hidden = false;
+        await buscar();
+        canal = sb.channel("pedidos").on("postgres_changes", { event: "INSERT", schema: "public", table: P.tabela }, (m) => novo(m.new)).subscribe();
+        clearInterval(timer); timer = setInterval(buscar, 20000); // garante mesmo se o tempo real cair
+      }
+      function pedirLogin() { $("#app").hidden = true; $("#login").hidden = false; status(false); }
+
+      $("#entrar").onclick = async () => {
+        $("#erro").textContent = "";
+        const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#senha").value });
+        if (error) { $("#erro").textContent = "E-mail ou senha incorretos."; return; }
+        audio = new AudioContext(); $("#som").textContent = "Som ativado"; $("#som").classList.add("on");
+        iniciar();
+      };
+      $("#senha").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#entrar").click(); });
+      $("#sair").onclick = async () => { if (canal) sb.removeChannel(canal); clearInterval(timer); await sb.auth.signOut(); pedirLogin(); };
+
+      sb.auth.getSession().then(({ data }) => (data.session ? iniciar() : pedirLogin()));
+    })();
+  </script>
+</body>
+</html>
