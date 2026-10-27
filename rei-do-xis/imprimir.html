@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Imprimir pedido</title>
+  <style>
+    /* Via para impressora térmica: 80 mm (padrão) ou 58 mm */
+    :root { --w: 72mm; }
+    body.w58 { --w: 48mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #e9e9e9; font-family: "Courier New", Courier, monospace; color: #000; }
+    .bar { position: sticky; top: 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 12px 16px; background: #111; }
+    .bar button { font: 600 15px system-ui, sans-serif; border: 0; border-radius: 10px; padding: 11px 18px; cursor: pointer; background: #333; color: #fff; }
+    .bar .main { background: #c8161d; }
+    .bar .on { outline: 2px solid #f9a51a; }
+    .via { width: var(--w); margin: 18px auto 40px; background: #fff; padding: 4mm 3mm; font-size: 12px; line-height: 1.35; box-shadow: 0 2px 10px rgba(0,0,0,.15); }
+    body.w58 .via { font-size: 10.5px; }
+    .c { text-align: center; }
+    .big { font-size: 1.5em; font-weight: 700; }
+    .b { font-weight: 700; }
+    hr { border: 0; border-top: 1px dashed #000; margin: 6px 0; }
+    .row { display: flex; justify-content: space-between; gap: 6px; }
+    .det { padding-left: 10px; font-size: .92em; }
+    .tot { font-size: 1.25em; font-weight: 700; }
+    .erro { max-width: 360px; margin: 40px auto; font: 15px system-ui, sans-serif; text-align: center; }
+    @page { margin: 0; }
+    @media print {
+      body { background: #fff; }
+      .bar { display: none; }
+      .via { margin: 0; box-shadow: none; padding: 0 1mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <button class="main" id="imp">Imprimir</button>
+    <button id="b80" class="on">80 mm</button>
+    <button id="b58">58 mm</button>
+  </div>
+  <div id="out"></div>
+  <script>
+    (function () {
+      const brl = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const out = document.getElementById("out");
+      let p = null;
+      try {
+        const h = location.hash.slice(1).replace(/-/g, "+").replace(/_/g, "/");
+        p = JSON.parse(decodeURIComponent(escape(atob(h))));
+      } catch (e) { p = null; }
+      if (!p) { out.innerHTML = '<p class="erro">Não encontrei o pedido neste link. Abra o link "Imprimir pedido" que veio na mensagem do WhatsApp.</p>'; document.querySelector(".bar").hidden = true; return; }
+
+      out.innerHTML = `
+        <div class="via">
+          <div class="c big">REI DO XIS</div>
+          <div class="c">Santana do Livramento</div>
+          <hr>
+          <div class="c big">PEDIDO ${esc(p.n)}</div>
+          <div class="c">${esc(p.d)}</div>
+          ${p.c ? `<div>Cliente: <span class="b">${esc(p.c)}</span></div>` : ""}
+          <hr>
+          ${p.i.map(([q, n, u, det]) => `
+            <div class="row b"><span>${q}x ${esc(n)}</span><span>${brl(u * q)}</span></div>
+            ${det.map((d) => `<div class="det">${esc(d)}</div>`).join("")}`).join("")}
+          <hr>
+          <div class="row tot"><span>TOTAL</span><span>${brl(p.s)}</span></div>
+          <div class="det">+ taxa de entrega, se houver</div>
+          <hr>
+          <div class="b">${p.e ? "ENTREGA" : "RETIRADA NO LOCAL"}</div>
+          ${p.e ? `<div>${esc(p.e)}</div>` : ""}
+          <div>Pagamento: <span class="b">${esc(p.p)}</span></div>
+          <hr>
+          <div class="c">Obrigado pela preferência!</div>
+        </div>`;
+
+      const set = (w) => { document.body.classList.toggle("w58", w === 58); document.getElementById("b80").classList.toggle("on", w === 80); document.getElementById("b58").classList.toggle("on", w === 58); try { localStorage.setItem("via_largura", w); } catch (e) {} };
+      let w = 80; try { w = Number(localStorage.getItem("via_largura")) || 80; } catch (e) {}
+      set(w);
+      document.getElementById("b80").onclick = () => set(80);
+      document.getElementById("b58").onclick = () => set(58);
+      document.getElementById("imp").onclick = () => window.print();
+      if (!/noprint/.test(location.search)) setTimeout(() => window.print(), 600);
+    })();
+  </script>
+</body>
+</html>

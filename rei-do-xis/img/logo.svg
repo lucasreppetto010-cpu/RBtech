@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="98" fill="#111"/>
+  <circle cx="100" cy="100" r="88" fill="#c8161d"/>
+  <path d="M62 72 L70 44 L86 60 L100 36 L114 60 L130 44 L138 72 Z" fill="#f9a51a" stroke="#7a4b00" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="70" cy="44" r="5" fill="#f9a51a"/>
+  <circle cx="100" cy="36" r="5" fill="#f9a51a"/>
+  <circle cx="130" cy="44" r="5" fill="#f9a51a"/>
+  <text x="100" y="118" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="40" fill="#fff" stroke="#111" stroke-width="2" paint-order="stroke">Rei</text>
+  <text x="100" y="158" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="34" fill="#fff" stroke="#111" stroke-width="2" paint-order="stroke"><tspan font-size="22">do</tspan> Xis</text>
+</svg>

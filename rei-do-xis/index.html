@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Cardápio</title>
+  <meta name="theme-color" content="#0c0c0c" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="data.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="cover" id="cover"></div>
+    <div class="wrap brand">
+      <img class="brand__logo" id="logo" alt="" />
+      <div class="brand__info">
+        <h1 id="nome"></h1>
+        <p class="brand__slogan" id="slogan"></p>
+        <div class="brand__meta">
+          <span class="status" id="status"></span>
+          <span class="meta-dot">•</span>
+          <span id="tempo"></span>
+        </div>
+      </div>
+    </div>
+    <div class="wrap chips-info">
+      <span class="pill">🛵 Entrega</span>
+      <span class="pill">🏠 Retirada</span>
+      <span class="pill" id="cidade"></span>
+    </div>
+  </header>
+
+  <nav class="cats" id="cats" aria-label="Categorias"></nav>
+
+  <main class="wrap" id="menu"></main>
+
+  <footer class="foot wrap">
+    <img id="logoFoot" alt="" />
+    <p id="horarioTxt"></p>
+    <p><a id="igLink" target="_blank" rel="noopener"></a></p>
+    <p class="foot__small">Pedidos finalizados pelo WhatsApp · via impressa na térmica</p>
+    <p class="foot__small" id="aviso" hidden></p>
+  </footer>
+
+  <button class="cartbar" id="cartbar" hidden>
+    <span class="cartbar__qty" id="cartQty">0</span>
+    <span>Ver pedido</span>
+    <strong id="cartTotal">R$ 0,00</strong>
+  </button>
+
+  <!-- Detalhe do item -->
+  <div class="sheet" id="itemSheet" aria-hidden="true">
+    <div class="sheet__bg" data-close></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true" aria-labelledby="itNome">
+      <button class="close" data-close aria-label="Fechar">✕</button>
+      <img class="it__img" id="itImg" alt="" />
+      <div class="it__body">
+        <h2 id="itNome"></h2>
+        <p class="it__desc" id="itDesc"></p>
+
+        <div class="block" id="blkTam">
+          <p class="block__t">Tamanho <span class="req">obrigatório</span></p>
+          <div class="opts" id="optTam"></div>
+        </div>
+
+        <div class="block" id="blkMeia">
+          <p class="block__t">Sabores <span class="opt" id="sabCount"></span></p>
+          <div class="opts opts--col" id="optSab"></div>
+          <p class="hint" id="sabHint"></p>
+        </div>
+
+        <div class="block" id="blkBorda">
+          <p class="block__t">Borda <span class="opt">opcional</span></p>
+          <div class="opts opts--col" id="optBorda"></div>
+        </div>
+
+        <div class="block" id="blkAdic">
+          <p class="block__t">Adicionais <span class="opt">opcional</span></p>
+          <div class="opts opts--col" id="optAdic"></div>
+        </div>
+
+        <div class="block">
+          <p class="block__t">Alguma observação?</p>
+          <textarea class="input" id="itObs" rows="2" placeholder="Ex.: sem cebola, sem maionese..."></textarea>
+        </div>
+      </div>
+      <div class="it__foot">
+        <div class="qty">
+          <button id="qMenos" aria-label="Diminuir">−</button>
+          <span id="qVal">1</span>
+          <button id="qMais" aria-label="Aumentar">+</button>
+        </div>
+        <button class="btn btn--main" id="itAdd">Adicionar <span id="itPreco"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pedido -->
+  <div class="sheet" id="cartSheet" aria-hidden="true">
+    <div class="sheet__bg" data-close></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="Seu pedido">
+      <button class="close" data-close aria-label="Fechar">✕</button>
+      <div class="it__body">
+        <h2>Seu pedido</h2>
+        <div id="cartItems"></div>
+
+        <div class="block">
+          <p class="block__t">Como você quer receber?</p>
+          <div class="opts" id="optEntrega">
+            <button class="opt-btn is-on" data-ent="Entrega">🛵 Entrega</button>
+            <button class="opt-btn" data-ent="Retirada">🏠 Retirar no local</button>
+          </div>
+        </div>
+
+        <div class="block" id="blkEnd">
+          <p class="block__t">Endereço de entrega</p>
+          <input class="input" id="endRua" placeholder="Rua e número" autocomplete="street-address" />
+          <input class="input" id="endBairro" placeholder="Bairro" />
+          <input class="input" id="endRef" placeholder="Ponto de referência (opcional)" />
+        </div>
+
+        <div class="block">
+          <p class="block__t">Pagamento</p>
+          <div class="opts" id="optPag">
+            <button class="opt-btn is-on" data-pag="Pix">Pix</button>
+            <button class="opt-btn" data-pag="Cartão">Cartão</button>
+            <button class="opt-btn" data-pag="Dinheiro">Dinheiro</button>
+          </div>
+          <input class="input" id="troco" placeholder="Troco para quanto?" hidden />
+        </div>
+
+        <div class="block">
+          <p class="block__t">Seu nome</p>
+          <input class="input" id="cliNome" placeholder="Como podemos te chamar?" autocomplete="name" />
+        </div>
+
+        <div class="sum">
+          <div><span>Subtotal</span><strong id="sumSub"></strong></div>
+          <div class="sum__fee"><span>Taxa de entrega</span><span id="sumTaxa"></span></div>
+        </div>
+      </div>
+      <div class="it__foot">
+        <button class="btn btn--wpp" id="enviar">Enviar pedido pelo WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
