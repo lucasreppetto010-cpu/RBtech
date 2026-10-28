@@ -180,7 +180,7 @@
       fetch(`${L.pedidos.url}/rest/v1/${L.pedidos.tabela}`, {
         method: "POST", keepalive: true,
         headers: { apikey: L.pedidos.chave, Authorization: `Bearer ${L.pedidos.chave}`, "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ numero: num, cliente: nome || null, itens: cart.map((i) => ({ qtd: i.qtd, nome: i.nome, unit: i.unit, det: i.det })), total: total(), entrega: endereco || null, pagamento: pagTxt }),
+        body: JSON.stringify({ empresa_id: L.pedidos.empresa, numero: num, cliente: nome || null, itens: cart.map((i) => ({ qtd: i.qtd, nome: i.nome, unit: i.unit, det: i.det })), total: total(), entrega: endereco || null, pagamento: pagTxt }),
       }).catch(() => { /* o pedido segue pelo WhatsApp mesmo sem o painel */ });
     }
     const linhas = [

@@ -1,9 +1,10 @@
 // Licença RB Tech: antes de entregar qualquer arquivo do app, o servidor do Netlify
-// pergunta ao Supabase do cliente se a licença está ativa. Suspensa (pelo Alfred),
+// pergunta ao banco central da RB Tech se a licença da empresa está ativa. Suspensa (pelo Alfred),
 // nada do cardápio nem do painel da loja é enviado, só a página de "fora do ar". Reativou, volta na hora.
 
-const SUPABASE = "https://vumenohrsvnsjhycdlex.supabase.co";
-const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1bWVub2hyc3Zuc2poeWNkbGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzA1NTYsImV4cCI6MjEwODcwNjU1Nn0.g7uScmq2jGTz-Q5-2n7K1eupkDpgXEZ-LXKIuR4Q_gQ";
+const SUPABASE = "https://wcgdrbdsxgbpbcfxdoiw.supabase.co";   // banco central da RB Tech
+const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZ2RyYmRzeGdicGJjZnhkb2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMDc5MTAsImV4cCI6MjEwODY4MzkxMH0.wZm2NQemw5AsYjm23LWGMN6qEA9Z-H_hIVhcwUr5tZQ";
+const EMPRESA = "rei-do-xis";   // id em empresas (banco central)
 const NOME = "Rei do Xis";
 const GUARDA_MS = 15000;   // consulta o Supabase no máximo a cada 15 s por servidor
 
@@ -13,13 +14,15 @@ async function estadoLicenca() {
   if (Date.now() - ultima.quando < GUARDA_MS) return ultima.estado;
   let estado;
   try {
-    const r = await fetch(`${SUPABASE}/rest/v1/rbtech_licenca?select=ativo&id=eq.1`, {
-      headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
+    const r = await fetch(`${SUPABASE}/rest/v1/rpc/licenca_ativa`, {
+      method: "POST",
+      headers: { apikey: ANON, Authorization: `Bearer ${ANON}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_empresa: EMPRESA }),
       signal: AbortSignal.timeout(3000),
     });
-    const linhas = r.ok ? await r.json() : null;
+    const ativo = r.ok ? await r.json() : undefined;   // true, false ou null (empresa não cadastrada)
     // sem resposta do Supabase o site fica no ar (o cliente que paga nunca é bloqueado por engano)
-    estado = !linhas ? "sem-resposta" : linhas.length && linhas[0].ativo === false ? "suspenso" : "ativo";
+    estado = ativo === undefined ? "sem-resposta" : ativo === false ? "suspenso" : "ativo";
   } catch (e) {
     estado = "sem-resposta";
   }

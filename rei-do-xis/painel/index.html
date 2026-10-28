@@ -178,20 +178,30 @@
       $("#teste").onclick = () => { fila.push({ id: null, numero: "TESTE", criado_em: new Date().toISOString(), cliente: "Teste de impressão", itens: [{ qtd: 1, nome: "X-Do Rei", unit: 31, det: [] }], total: 31, entrega: null, pagamento: "Pix" }); rodarFila(); };
 
       // ---------- Conexão ----------
+      // Primeira busca: pedidos das últimas 12 horas. Depois: só os que chegaram depois do último
+      // (economiza o banco do plano grátis; o tempo real costuma trazer antes).
+      let ultimoId = 0, carregado = false;
       async function buscar() {
-        const desde = new Date(Date.now() - 12 * 3600e3).toISOString();
-        const { data, error } = await sb.from(P.tabela).select("*").gte("criado_em", desde).order("criado_em", { ascending: false }).limit(100);
+        let q = sb.from(P.tabela).select("*").eq("empresa_id", P.empresa);
+        q = carregado ? q.gt("id", ultimoId).order("id") : q.gte("criado_em", new Date(Date.now() - 12 * 3600e3).toISOString()).order("criado_em", { ascending: false }).limit(100);
+        const { data, error } = await q;
         if (error) { status(false); return; }
         status(true);
-        pedidos = data; render();
-        data.slice().reverse().forEach((p) => { if (!p.impresso_em) novo(p); });
+        if (!carregado) {
+          pedidos = data; render(); data.slice().reverse().forEach((p) => { if (!p.impresso_em) novo(p); });
+          // sem pedidos nas últimas 12 h: começa do último pedido que existir (os antigos não reimprimem)
+          if (!data.length) { const r = await sb.from(P.tabela).select("id").eq("empresa_id", P.empresa).order("id", { ascending: false }).limit(1); if (r.error) return; ultimoId = r.data.length ? r.data[0].id : 0; }
+          carregado = true;
+        } else data.forEach(novo);
+        data.forEach((p) => { ultimoId = Math.max(ultimoId, p.id); });
       }
       function status(ok) { $("#st").textContent = ok ? "● Conectado · aguardando pedidos" : "● Sem conexão"; $("#st").className = "st " + (ok ? "ok" : "off"); }
       async function iniciar() {
         $("#login").hidden = true; $("#app").hidden = false;
         await buscar();
-        canal = sb.channel("pedidos").on("postgres_changes", { event: "INSERT", schema: "public", table: P.tabela }, (m) => novo(m.new)).subscribe();
-        clearInterval(timer); timer = setInterval(buscar, 20000); // garante mesmo se o tempo real cair
+        canal = sb.channel("pedidos").on("postgres_changes", { event: "INSERT", schema: "public", table: P.tabela, filter: `empresa_id=eq.${P.empresa}` },
+          (m) => { ultimoId = Math.max(ultimoId, m.new.id); novo(m.new); }).subscribe();
+        clearInterval(timer); timer = setInterval(buscar, 60000); // garante mesmo se o tempo real cair
       }
       function pedirLogin() { $("#app").hidden = true; $("#login").hidden = false; status(false); }
 
